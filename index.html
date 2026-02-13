@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Proposal</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;600&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --primary-dark: #c9184a;
+            --primary-light: #ff8fa3;
+            --glass-bg: rgba(20, 10, 15, 0.85);
+            --glass-border: rgba(255, 77, 109, 0.5);
+            --text-main: #ffe5ec;
+            --accent-green: #06d6a0;
+            --accent-red: #ef233c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #2b0c16, #000000);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND PARTICLES --- */
+        .hearts-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-particle {
+            position: absolute;
+            color: var(--primary);
+            font-size: 20px;
+            opacity: 0;
+            animation: floatUp 15s linear infinite;
+        }
+
+        .bg-particle::after {
+            content: '❤️';
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) translateX(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-10vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* --- CONTAINER --- */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 50px 30px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 77, 109, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: var(--primary-light);
+            text-transform: none;
+            letter-spacing: 0;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ddd;
+        }
+
+        .security-badge {
+            font-family: 'Outfit', sans-serif;
+            border: 1px solid var(--primary-light);
+            color: var(--primary-light);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            background: rgba(255, 77, 109, 0.15);
+            box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
+        }
+
+        /* --- LOCK ANIMATION --- */
+        .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                text-shadow: 0 0 0 rgba(255, 77, 109, 0.7);
+                transform: scale(1);
+            }
+
+            70% {
+                text-shadow: 0 0 20px rgba(255, 77, 109, 0);
+                transform: scale(1.1);
+            }
+
+            100% {
+                text-shadow: 0 0 0 rgba(255, 77, 109, 0);
+                transform: scale(1);
+            }
+        }
+
+        /* --- BUTTONS --- */
+        .btn-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping if buttons get huge */
+            min-height: 100px;
+            /* Space for growing */
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: none;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .btn span.sub {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: normal;
+            opacity: 0.8;
+            margin-top: 5px;
+            text-transform: none;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #06d6a0, #049f76);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.4);
+            z-index: 20;
+            /* Ensure YES stays on top if overlapping */
+        }
+
+        .btn-yes:hover {
+            box-shadow: 0 0 25px rgba(6, 214, 160, 0.6);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #ef233c, #d90429);
+            box-shadow: 0 5px 15px rgba(239, 35, 60, 0.4);
+        }
+
+        .btn-no:hover {
+            box-shadow: 0 0 25px rgba(239, 35, 60, 0.6);
+        }
+
+        /* --- SUCCESS STATE --- */
+        #success-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .love-letter {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-top: 20px;
+            color: #ffccd5;
+        }
+
+        /* --- INPUTS --- */
+        input {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            width: 80%;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .error-msg {
+            color: var(--accent-red);
+            font-size: 0.9rem;
+            min-height: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* --- UTILS --- */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hearts-bg" id="bg-particles"></div>
+
+    <div class="app-container" id="main-card">
+
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen">
+            <div class="security-badge">🔒 AUTHENTICATION REQUIRED</div>
+            <h1>Enter Password</h1>
+            <p class="subtitle">Protected System. Identify yourself.</p>
+
+            <input type="password" id="password-input" placeholder="Password (Hint:my name)" />
+            <div class="error-msg" id="login-error"></div>
+
+            <button class="btn btn-yes" onclick="checkPassword()">
+                Unlock
+                <span class="sub">(Login)</span>
+            </button>
+        </div>
+
+        <!-- PROPOSAL SCREEN -->
+        <div id="proposal-content" class="hidden">
+            <div class="security-badge">🔒 SYSTEM ENCRYPTED</div>
+            <div class="lock-icon">❤️</div>
+
+            <h1>Will you be my Valentine?</h1>
+            <p class="subtitle">Key required to unlock my heart.</p>
+
+            <div class="btn-container">
+                <button class="btn btn-yes" id="btn-yes" onclick="handleYes()">
+
+                    <span class="sub">(Yes)</span>
+                </button>
+
+                <button class="btn btn-no" id="btn-no" onclick="handleNo()">
+
+                    <span class="sub">(No)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div id="success-screen">
+            <div style="font-size: 5rem; animation: pop 0.5s;">🔓💖</div>
+            <h1>Access Granted!</h1>
+            <p class="love-letter">
+                YESSS BABYYY<br>
+                On Saturday at 3pm<br>
+                Happy Valentine's Day!
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        let yesScale = 1;
+        let noScale = 1;
+
+        const phrases = [
+            "Are you sure?",
+            "Actually?",
+            "Come onnnn",
+            "Error 404: No Found",
+            "Look again!",
+            "Really?",
+            "Last chance!",
+            "Don't do this!",
+            "Heart.exe crashing"
+        ];
+        let phraseIndex = 0;
+
+        const yesPhrases = [
+            "Baby...",
+            "Please?",
+            "Be Mine 🥺",
+            "Unlock Love",
+            "Pretty Please?",
+            "Say Yes!",
+            "Don't say no...",
+            "SAY YES!",
+            "I Love You",
+            "YESSS!"
+        ];
+
+        function handleNo() {
+            // 1. Shrink NO button
+            noScale *= 0.85;
+            const btnNo = document.getElementById('btn-no');
+            btnNo.style.transform = `scale(${noScale})`;
+
+            // 2. Grow YES button - Slowed down
+            yesScale *= 1.15;
+            const btnYes = document.getElementById('btn-yes');
+            btnYes.style.transform = `scale(${yesScale})`;
+
+            // 3. Change YES button text
+            const phrase = yesPhrases[phraseIndex % yesPhrases.length];
+            btnYes.innerHTML = `${phrase} <span class="sub">(Yes)</span>`;
+
+            // Increase index for next time
+            phraseIndex++;
+
+            // Optional: If NO gets too small, hide it or make it unclickable
+            if (noScale < 0.2) {
+                btnNo.style.opacity = '0.5';
+                btnNo.style.pointerEvents = 'none';
+            }
+        }
+
+        function handleYes() {
+            // Success!
+            document.getElementById('proposal-content').classList.add('hidden');
+            document.getElementById('success-screen').style.display = 'flex';
+
+            createFireworks();
+        }
+
+        // --- VISUALS ---
+        function initBg() {
+            const container = document.getElementById('bg-particles');
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('div');
+                el.className = 'bg-particle';
+                el.style.left = Math.random() * 100 + '%';
+                // Random size variation
+                const scale = Math.random() * 0.5 + 0.5;
+                el.style.transform = `scale(${scale})`;
+
+                el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                el.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(el);
+            }
+
+            // Mouse trail effect
+            document.addEventListener('mousemove', (e) => {
+                if (Math.random() > 0.1) return; // limit creation
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+                heart.style.pointerEvents = 'none';
+                heart.style.zIndex = '9999';
+                document.body.appendChild(heart);
+
+                heart.animate([
+                    { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 1 },
+                    { transform: `translate(-50%, -100px) scale(1.5)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => heart.remove();
+            });
+        }
+
+        function createFireworks() {
+            const colors = ['#ff4d6d', '#fff', '#06d6a0'];
+            const container = document.body;
+
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.style.position = 'fixed';
+                    p.style.left = '50%';
+                    p.style.top = '50%';
+                    p.style.width = '8px';
+                    p.style.height = '8px';
+                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    p.style.borderRadius = '50%';
+                    p.style.pointerEvents = 'none';
+                    p.style.zIndex = '9999';
+                    container.appendChild(p);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = Math.random() * 300 + 100;
+
+                    p.animate([
+                        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                        { transform: `translate(calc(-50% + ${Math.cos(angle) * velocity}px), calc(-50% + ${Math.sin(angle) * velocity}px)) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 1000,
+                        easing: 'cubic-bezier(0, .9, .57, 1)',
+                        fill: 'forwards'
+                    }).onfinish = () => p.remove();
+                }, i * 20);
+            }
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const val = input.value.trim().toLowerCase();
+
+            // PASSWORD CHECK (Default: "bilguun")
+            if (val === "bilguun") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('proposal-content').classList.remove('hidden');
+            } else {
+                const err = document.getElementById('login-error');
+                err.innerText = "ACCESS DENIED. INCORRECT PASSWORD.";
+                input.style.borderColor = "var(--accent-red)";
+                input.value = "";
+
+                // Shake effect
+                input.style.transform = "translateX(5px)";
+                setTimeout(() => input.style.transform = "translateX(0)", 100);
+                setTimeout(() => {
+                    err.innerText = "";
+                    input.style.borderColor = "var(--glass-border)";
+                }, 2000);
+            }
+        }
+
+        // Enter key for password
+        const passInp = document.getElementById('password-input');
+        if (passInp) {
+            passInp.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') checkPassword();
+            });
+        }
+
+        window.onload = initBg;
+
+    </script>
+</body>
+
+</html>
